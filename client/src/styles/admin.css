@@ -1,0 +1,236 @@
+/* Shared dashboard look for the admin and vendor panels */
+
+.admin-layout,
+.vendor-layout {
+  display: flex;
+  min-height: calc(100vh - var(--nav-h));
+  background: var(--cream);
+}
+
+/* SIDEBAR */
+.admin-sidebar,
+.vendor-sidebar {
+  width: 250px;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, var(--brand-deep), var(--brand-dark));
+  color: #fff;
+  padding: 26px 16px;
+  height: calc(100vh - var(--nav-h));
+  position: sticky;
+  top: var(--nav-h);
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-sidebar h2,
+.vendor-sidebar h2 {
+  color: #fff;
+  font-size: 17px;
+  margin: 0 10px 4px;
+}
+
+.sidebar-sub {
+  margin: 0 10px 22px;
+  font-size: 12px;
+  color: #8fbdb8;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+
+.admin-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-sidebar li,
+.vendor-sidebar button {
+  display: block;
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 10px;
+  margin-bottom: 4px;
+  color: #cfe5e2;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.admin-sidebar li:hover,
+.vendor-sidebar button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.admin-sidebar li.active,
+.vendor-sidebar button.active {
+  background: rgba(107, 184, 178, 0.22);
+  color: #fff;
+  box-shadow: inset 3px 0 0 var(--brand-light);
+}
+
+/* CONTENT */
+.admin-content,
+.vendor-content {
+  flex: 1;
+  min-width: 0;
+  padding: 32px 36px;
+}
+
+.admin-content h1,
+.vendor-content h1 {
+  margin: 0 0 22px;
+  font-size: 28px;
+}
+
+/* STATS */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 18px;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 20px 22px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.stat-card.clickable:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+}
+
+.stat-card::after {
+  content: "";
+  position: absolute;
+  right: -24px;
+  top: -24px;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: var(--brand-tint);
+}
+
+.stat-icon {
+  position: absolute;
+  right: 16px;
+  top: 14px;
+  font-size: 22px;
+  z-index: 1;
+}
+
+.stat-card h3 {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.stat-card p {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+/* TABLES */
+.admin-table,
+.vendor-table {
+  width: 100%;
+  background: var(--surface);
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  font-size: 14px;
+}
+
+.admin-table th,
+.vendor-table th {
+  background: #faf6ef;
+  color: var(--ink-soft);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-align: left;
+}
+
+.admin-table th,
+.admin-table td,
+.vendor-table th,
+.vendor-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.admin-table tbody tr:hover,
+.vendor-table tbody tr:hover {
+  background: #fdfbf7;
+}
+
+.admin-table tr:last-child td,
+.vendor-table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table .btn,
+.vendor-table .btn {
+  padding: 7px 12px;
+  font-size: 13px;
+  margin: 2px 4px 2px 0;
+}
+
+/* SMALL SCREENS: sidebar becomes a top tab bar */
+@media (max-width: 860px) {
+  .admin-layout,
+  .vendor-layout {
+    flex-direction: column;
+  }
+
+  .admin-sidebar,
+  .vendor-sidebar {
+    width: auto;
+    height: auto;
+    position: static;
+    padding: 14px;
+  }
+
+  .sidebar-sub {
+    display: none;
+  }
+
+  .admin-sidebar ul,
+  .vendor-nav {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+  }
+
+  .admin-sidebar li,
+  .vendor-sidebar button {
+    width: auto;
+    white-space: nowrap;
+    margin: 0;
+  }
+
+  .admin-content,
+  .vendor-content {
+    padding: 20px 16px;
+  }
+}
