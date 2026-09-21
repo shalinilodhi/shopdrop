@@ -1,33 +1,18 @@
 const express = require("express");
-const Cart = require("../models/Cart");
-const Order = require("../models/Order");
-const auth = require("../middleware/authMiddleware");
+const protect = require("../middleware/authMiddleware");
+const allowRoles = require("../middleware/roleMiddleware");
+const {
+  checkout,
+  getMyOrders,
+  cancelOrder,
+} = require("../controllers/orderController");
 
 const router = express.Router();
 
-// CHECKOUT
-router.post("/checkout", auth, async (req, res) => {
-  const userId = req.user.userId;
+router.use(protect, allowRoles("customer"));
 
-  const cart = await Cart.findOne({ user: userId }).populate("items.product");
-  if (!cart || cart.items.length === 0) {
-    return res.status(400).json({ message: "Cart is empty" });
-  }
-
-  const totalAmount = cart.items.reduce(
-    (sum, item) => sum + item.product.price * item.quantity,
-    0
-  );
-
-  const order = await Order.create({
-    user: userId,
-    items: cart.items,
-    totalAmount,
-  });
-
-  await Cart.deleteOne({ user: userId });
-
-  res.status(201).json(order);
-});
+router.post("/checkout", checkout);
+router.get("/my", getMyOrders);
+router.put("/:id/cancel", cancelOrder);
 
 module.exports = router;
