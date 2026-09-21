@@ -1,67 +1,116 @@
 .login-page {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #1f1c2c, #928dab);
+  min-height: calc(100vh - var(--nav-h));
+  padding: 40px 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(107, 184, 178, 0.28), transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(244, 163, 64, 0.16), transparent 40%),
+    var(--cream);
 }
 
 .login-card {
-  background: #ffffff;
-  width: 380px;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+  width: 420px;
+  max-width: 100%;
+  background: var(--surface);
+  padding: 36px 34px 30px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
 }
 
-.app-title {
-  text-align: center;
-  margin-bottom: 5px;
+.auth-logo {
+  display: flex;
+  justify-content: center;
+  text-decoration: none;
+  margin-bottom: 8px;
 }
 
 .subtitle {
   text-align: center;
-  color: #777;
-  margin-bottom: 25px;
+  color: var(--muted);
+  margin: 0 0 24px;
 }
 
 .login-card label {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  margin-top: 10px;
+  color: var(--ink-soft);
+  margin-top: 12px;
   display: block;
 }
 
 .login-card input,
 .login-card select {
   width: 100%;
-  padding: 10px;
+  padding: 12px 14px;
   margin-top: 6px;
-  margin-bottom: 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  outline: none;
+  margin-bottom: 4px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  font-size: 15px;
+  background: var(--surface);
+  color: var(--ink);
 }
 
-.login-card input:focus,
-.login-card select:focus {
-  border-color: #6c63ff;
-}
-
-.login-card button {
+.login-card button[type="submit"] {
   width: 100%;
-  padding: 12px;
-  margin-top: 15px;
-  background: #6c63ff;
+  padding: 13px;
+  margin-top: 22px;
+  background: var(--brand-dark);
   color: #fff;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
+  font-weight: 700;
+  transition: background 0.15s;
 }
 
-.login-card button:hover {
-  background: #554eea;
+.login-card button[type="submit"]:hover:not(:disabled) {
+  background: var(--brand-deep);
+}
+
+.login-card button:disabled {
+  opacity: 0.7;
+}
+
+.switch-auth {
+  text-align: center;
+  margin: 20px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.switch-auth a {
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.role-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 6px 0 8px;
+}
+
+.role-toggle button {
+  padding: 14px 10px;
+  background: var(--cream);
+  color: var(--ink-soft);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-weight: 700;
+  transition: all 0.15s;
+}
+
+.role-toggle button.active {
+  background: var(--brand-tint);
+  border-color: var(--brand);
+  color: var(--brand-dark);
+}
+
+.login-card .hint {
+  margin-top: 16px;
 }

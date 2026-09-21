@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { registerUser } from "../api/api";
+import { getError } from "../utils/format";
+import Logo from "../components/Logo";
 import "../styles/login.css"; // reuse same style
 
 const Register = () => {
@@ -10,7 +13,14 @@ const Register = () => {
     email: "",
     password: "",
     role: "customer",
+    shopName: "",
+    phone: "",
+    address: "",
   });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const isVendor = form.role === "vendor";
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -18,36 +28,46 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setError("");
+    setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        alert(data.message || "Registration failed");
-        return;
-      }
-
-      alert("Registration successful. Please login.");
-      navigate("/login");
+      const data = await registerUser(form);
+      navigate("/login", { state: { registered: data.message } });
     } catch (err) {
-      alert("Server error");
+      setError(getError(err));
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="login-page">
       <div className="login-card">
-        <h1 className="app-title">Shop n Drop</h1>
-        <p className="subtitle">Create New Account</p>
+        <Link to="/" className="auth-logo"><Logo size={56} stacked /></Link>
+        <p className="subtitle">Create your free account</p>
+
+        {error && <div className="alert error">{error}</div>}
 
         <form onSubmit={handleSubmit}>
-          <label>Name</label>
+          <label>I want to</label>
+          <div className="role-toggle">
+            <button
+              type="button"
+              className={!isVendor ? "active" : ""}
+              onClick={() => setForm({ ...form, role: "customer" })}
+            >
+              🛒 Shop
+            </button>
+            <button
+              type="button"
+              className={isVendor ? "active" : ""}
+              onClick={() => setForm({ ...form, role: "vendor" })}
+            >
+              🏪 Sell
+            </button>
+          </div>
+
+          <label>Full Name</label>
           <input
             name="name"
             placeholder="Enter full name"
@@ -56,12 +76,18 @@ const Register = () => {
             required
           />
 
-          <label>Role</label>
-          <select name="role" value={form.role} onChange={handleChange}>
-            <option value="customer">Customer</option>
-            <option value="vendor">Vendor</option>
-            <option value="admin">Admin</option>
-          </select>
+          {isVendor && (
+            <>
+              <label>Shop Name</label>
+              <input
+                name="shopName"
+                placeholder="e.g. Sharma General Store"
+                value={form.shopName}
+                onChange={handleChange}
+                required
+              />
+            </>
+          )}
 
           <label>Email</label>
           <input
@@ -77,14 +103,44 @@ const Register = () => {
           <input
             type="password"
             name="password"
-            placeholder="Enter password"
+            placeholder="At least 6 characters"
             value={form.password}
             onChange={handleChange}
+            minLength={6}
             required
           />
 
-          <button type="submit">Sign Up</button>
+          <label>Phone</label>
+          <input
+            name="phone"
+            placeholder="Mobile number"
+            value={form.phone}
+            onChange={handleChange}
+            required={isVendor}
+          />
+
+          <label>{isVendor ? "Shop Address" : "Address"}</label>
+          <input
+            name="address"
+            placeholder={isVendor ? "Where is your shop?" : "Delivery address"}
+            value={form.address}
+            onChange={handleChange}
+            required={isVendor}
+          />
+
+          <button type="submit" disabled={loading}>
+            {loading ? "Creating account..." : "Sign Up"}
+          </button>
         </form>
+
+        {isVendor && (
+          <p className="hint">
+            Vendor accounts need admin approval before products go live.
+          </p>
+        )}
+        <p className="switch-auth">
+          Already have an account? <Link to="/login">Login</Link>
+        </p>
       </div>
     </div>
   );

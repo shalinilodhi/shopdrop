@@ -1,39 +1,54 @@
 import React, { useState, useContext } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import { getError } from "../utils/format";
+import Logo from "../components/Logo";
 import "../styles/login.css";
+
+const HOME_BY_ROLE = { admin: "/admin", vendor: "/vendor" };
 
 const Login = () => {
   const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const [form, setForm] = useState({
-    role: "customer",
-    email: "",
-    password: "",
-  });
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    login(form); // backend logic stays SAME
+    setError("");
+    setLoading(true);
+    try {
+      const user = await login(form.email, form.password);
+      navigate(
+        HOME_BY_ROLE[user.role] || location.state?.from || "/products",
+        { replace: true }
+      );
+    } catch (err) {
+      setError(getError(err));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="login-page">
       <div className="login-card">
-        <h1 className="app-title">Shop n Drop</h1>
-        <p className="subtitle">Role Based Login</p>
+        <Link to="/" className="auth-logo"><Logo size={56} stacked /></Link>
+        <p className="subtitle">Welcome back! Log in to continue.</p>
+
+        {location.state?.registered && (
+          <div className="alert success">{location.state.registered}</div>
+        )}
+        {error && <div className="alert error">{error}</div>}
 
         <form onSubmit={handleSubmit}>
-          <label>Role</label>
-          <select name="role" value={form.role} onChange={handleChange}>
-            <option value="admin">Admin</option>
-            <option value="vendor">Vendor</option>
-            <option value="customer">Customer</option>
-          </select>
-
           <label>Email</label>
           <input
             type="email"
@@ -54,8 +69,14 @@ const Login = () => {
             required
           />
 
-          <button type="submit">Login</button>
+          <button type="submit" disabled={loading}>
+            {loading ? "Logging in..." : "Log in"}
+          </button>
         </form>
+
+        <p className="switch-auth">
+          New here? <Link to="/register">Create an account</Link>
+        </p>
       </div>
     </div>
   );
