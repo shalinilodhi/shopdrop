@@ -2,28 +2,30 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 const protect = async (req, res, next) => {
-  let token;
-
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
-    token = req.headers.authorization.split(" ")[1];
-  }
+  const header = req.headers.authorization || "";
+  const token = header.startsWith("Bearer ") ? header.split(" ")[1] : null;
 
   if (!token) {
-    return res.status(401).json({ message: "No token provided" });
+    return res.status(401).json({ message: "Please login first" });
   }
 
+  let decoded;
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    req.user = await User.findById(decoded.userId).select("-password");
-
-    next();
+    decoded = jwt.verify(token, process.env.JWT_SECRET);
   } catch (error) {
-    res.status(401).json({ message: "Invalid token" });
+    return res.status(401).json({ message: "Session expired, login again" });
   }
+
+  const user = await User.findById(decoded.userId).select("-password");
+  if (!user) {
+    return res.status(401).json({ message: "Account no longer exists" });
+  }
+  if (user.isBlocked) {
+    return res.status(403).json({ message: "Your account has been blocked" });
+  }
+
+  req.user = user;
+  next();
 };
 
 module.exports = protect;
