@@ -1,58 +1,81 @@
 .profile-page {
-  min-height: calc(100vh - 70px);
+  min-height: calc(100vh - var(--nav-h));
   display: flex;
   justify-content: center;
-  align-items: center;
-  background: #f5f6fa;
+  align-items: flex-start;
+  padding: 40px 16px;
 }
 
 .profile-card {
-  width: 350px;
+  width: 480px;
+  max-width: 100%;
   padding: 30px;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
 }
 
-.profile-card h2 {
-  text-align: center;
-  margin-bottom: 20px;
+.profile-top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.profile-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--brand-light);
+  color: var(--brand-deep);
+  font-size: 26px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-top h2 {
+  margin: 0 0 4px;
+}
+
+.profile-top p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
 }
 
 .profile-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 15px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
 }
 
-.logout-btn {
+.profile-row span {
+  color: var(--muted);
+}
+
+.profile-card .section-title {
+  margin: 28px 0 4px;
+  font-size: 17px;
+}
+
+.profile-card .logout-btn {
   width: 100%;
-  margin-top: 15px;
+  margin-top: 24px;
   padding: 12px;
-  background: #e74c3c;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
+  background: none;
+  color: var(--danger);
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-sm);
   font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
+  font-weight: 700;
 }
 
-.logout-btn:hover {
-  background: #c0392b;
-}
-
-.profile-dropdown .logout-btn {
-  background: #e74c3c;
-  color: #fff !important;
-  border: none;
-  padding: 10px;
-  width: 100%;
-  text-align: left;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.profile-dropdown .logout-btn:hover {
-  background: #c0392b;
+.profile-card .logout-btn:hover {
+  background: var(--danger-bg);
 }

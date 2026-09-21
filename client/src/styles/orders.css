@@ -1,0 +1,106 @@
+.orders-page h2 {
+  font-size: 30px;
+  margin: 0 0 20px;
+}
+
+.order-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.order-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.order-head p {
+  margin: 4px 0 0;
+  font-size: 14px;
+}
+
+.order-items {
+  list-style: none;
+  padding: 10px 14px;
+  margin: 16px 0;
+  background: var(--cream);
+  border-radius: var(--radius-sm);
+}
+
+.order-items li {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 14px;
+}
+
+.order-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.order-foot strong {
+  font-size: 18px;
+}
+
+.order-card .btn {
+  margin-top: 14px;
+}
+
+/* Order progress tracker */
+.tracker {
+  display: flex;
+  margin: 18px 0 4px;
+}
+
+.tracker-step {
+  flex: 1;
+  position: relative;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.tracker-step::before {
+  content: "";
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin: 0 auto 6px;
+  border-radius: 50%;
+  background: var(--border);
+  position: relative;
+  z-index: 1;
+}
+
+.tracker-step::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: -50%;
+  width: 100%;
+  height: 3px;
+  background: var(--border);
+}
+
+.tracker-step:first-child::after {
+  display: none;
+}
+
+.tracker-step.done {
+  color: var(--brand-dark);
+}
+
+.tracker-step.done::before,
+.tracker-step.done::after {
+  background: var(--brand-light);
+}
