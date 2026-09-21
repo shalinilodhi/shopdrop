@@ -1,50 +1,46 @@
-import { createContext, useState } from "react";
-import { loginUser } from "../api/api";
+import { createContext, useCallback, useEffect, useState } from "react";
+import { getMe, loginUser } from "../api/api";
 
 export const AuthContext = createContext();
 
+const readStoredUser = () => {
+  try {
+    return JSON.parse(localStorage.getItem("user"));
+  } catch {
+    return null;
+  }
+};
+
 export const AuthProvider = ({ children }) => {
-  const storedUser = localStorage.getItem("user");
+  const [user, setUser] = useState(readStoredUser);
 
-  const [user, setUser] = useState(
-    storedUser ? JSON.parse(storedUser) : null
-  );
+  const saveUser = useCallback((u) => {
+    localStorage.setItem("user", JSON.stringify(u));
+    setUser(u);
+  }, []);
 
-  const login = async (email, password, role) => {
-    try {
-      const data = await loginUser(email, password, role);
-
-      if (!data || !data.user) {
-        alert("Login failed");
-        return;
-      }
-
-      localStorage.setItem("user", JSON.stringify(data.user));
-      localStorage.setItem("token", data.token);
-
-      setUser(data.user);
-
-      if (data.user.role === "admin") {
-        window.location.href = "/admin";
-      } else if (data.user.role === "vendor") {
-        window.location.href = "/vendor";
-      } else {
-        window.location.href = "/products";
-      }
-    } catch (err) {
-      alert("Invalid credentials");
+  // Refresh from the server on load (e.g. vendor got approved meanwhile)
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      getMe().then(saveUser).catch(() => {});
     }
+  }, [saveUser]);
+
+  const login = async (email, password) => {
+    const data = await loginUser({ email, password });
+    localStorage.setItem("token", data.token);
+    saveUser(data.user);
+    return data.user;
   };
 
   const logout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     setUser(null);
-    window.location.href = "/login";
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, updateUser: saveUser }}>
       {children}
     </AuthContext.Provider>
   );
