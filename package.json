@@ -4,7 +4,11 @@
   "description": "Shop N Drop Backend",
   "main": "server/index.js",
   "scripts": {
-    "start": "node server/index.js"
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "seed": "node server/seed.js",
+    "seed:demo": "node server/seed.js --demo",
+    "client": "npm start --prefix client"
   },
   "keywords": [],
   "author": "",
