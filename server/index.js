@@ -1,33 +1,43 @@
-// LOAD ENV FIRST
-require("dotenv").config();
+require("dotenv").config({ path: require("path").join(__dirname, ".env") });
 
 const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/db");
+const { errorHandler } = require("./middleware/errorHandler");
+
+const authRoutes = require("./routes/authRoutes");
+const productRoutes = require("./routes/productRoutes");
+const cartRoutes = require("./routes/cartRoutes");
+const orderRoutes = require("./routes/orderRoutes");
+const vendorRoutes = require("./routes/vendorRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 
 const app = express();
 
-// CONNECT DATABASE
-connectDB();
-
-// MIDDLEWARE
 app.use(cors());
 app.use(express.json());
 
-// ROOT TEST
 app.get("/", (req, res) => {
-  res.send("Backend OK");
+  res.send("ShopNDrop API is running");
 });
 
-// ROUTES
-console.log("Mounting AUTH routes");
-app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/products", require("./routes/productRoutes"));
-app.use("/api/cart", require("./routes/cartRoutes"));
-app.use("/api/orders", require("./routes/orderRoutes"));
+app.use("/api/auth", authRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/vendor", vendorRoutes);
+app.use("/api/admin", adminRoutes);
 
-// START SERVER
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
+
+app.use(errorHandler);
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log("Server running on port " + PORT);
+
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log("Server running on port " + PORT);
+  });
 });
