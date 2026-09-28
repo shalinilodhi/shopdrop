@@ -62,3 +62,24 @@ Admin accounts are only created by `npm run seed` (never from the sign-up form).
 | GET | /api/admin/stats, /customers, /vendors, /orders | admin |
 | PUT | /api/admin/customers/:id/block, /unblock | admin |
 | PUT | /api/admin/vendors/:id/approve, /suspend | admin |
+
+## Project structure
+
+```
+server/
+  models/        User, Product, Cart, Order schemas
+  controllers/   auth, product, cart, order, vendor, admin logic
+  routes/        URL to controller mapping
+  middleware/    protect (JWT), allowRoles, error handler
+  config/db.js   MongoDB connection
+  seed.js        creates the admin + demo data
+
+client/src/
+  pages/         Home, Products, Cart, Checkout, Orders, Profile,
+                 vendor/ and admin/ dashboards
+  components/    Navbar, Footer, Logo, StatusBadge
+  context/       AuthContext (login state), CartContext (cart state)
+  api/api.js     one axios client for every endpoint
+  routes/        ProtectedRoute (role based)
+  styles/        plain CSS, brand tokens in global.css
+```
