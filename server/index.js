@@ -17,6 +17,19 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Make sure the database is connected before any route runs.
+// Locally this resolves instantly after the first call; on Vercel it reuses
+// the cached connection.
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error("Database connection failed:", err.message);
+    res.status(503).json({ message: "Database unavailable, try again" });
+  }
+});
+
 app.get("/", (req, res) => {
   res.send("ShopNDrop API is running");
 });
@@ -34,10 +47,18 @@ app.use((req, res) => {
 
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
+// Started directly (npm start) -> listen on a port.
+// Required by Vercel (api/index.js) -> just export the app.
+if (require.main === module) {
+  const PORT = process.env.PORT || 5000;
+  connectDB()
+    .then(() => {
+      app.listen(PORT, () => console.log("Server running on port " + PORT));
+    })
+    .catch((err) => {
+      console.error(err.message);
+      process.exit(1);
+    });
+}
 
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log("Server running on port " + PORT);
-  });
-});
+module.exports = app;
