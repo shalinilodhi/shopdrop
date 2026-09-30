@@ -83,3 +83,21 @@ client/src/
   routes/        ProtectedRoute (role based)
   styles/        plain CSS, brand tokens in global.css
 ```
+
+## Tests
+
+```bash
+npm start                # terminal 1: API must be running
+npm run test:api         # 47 checks: auth, roles, products, cart, checkout, stock, admin
+npm run test:live        # smoke test against the deployed site
+```
+
+`test:api` covers the paths that matter: a customer cannot reach admin routes,
+a pending vendor cannot add products, the cart refuses more than the stock,
+checkout splits an order per shop and decreases stock, cancelling puts it back,
+and a blocked user cannot log in. Point it at any server with
+`API_URL=https://.../api npm run test:api`.
+
+## Live site
+
+https://shopndrop-shalini-lodhi-s-projects.vercel.app
